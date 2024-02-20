@@ -21,5 +21,7 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+    <string>我们需要您的同意才能保存图片到您的相册</string>
 </dict>
 </plist>
