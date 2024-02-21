@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  duck-mobile
-//
-//  Created by wd on 2024/2/20.
-//
-
 import UIKit
 import WebKit
 
@@ -37,9 +30,21 @@ class ViewController: UIViewController, WKScriptMessageHandler {
     func saveBase64ImageToAlbum(base64String: String) {
         if let imageData = Data(base64Encoded: base64String) {
             if let image = UIImage(data: imageData) {
-                UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+                UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
             }
         }
+    }
+
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        var message: String
+        if let error = error {
+            message = "保存失败，错误：\(error.localizedDescription)"
+        } else {
+            message = "图片已成功保存到相册"
+        }
+        // 向网页发送消息，通知保存状态
+        let jsScript = "window.BridgeInterface.handleSaveResult('\(message)');"
+        webView.evaluateJavaScript(jsScript, completionHandler: nil)
     }
 }
 
